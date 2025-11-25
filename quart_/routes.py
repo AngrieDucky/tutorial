@@ -6,6 +6,22 @@ from quart_wtf import QuartForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email, Regexp, Length
 from wtforms.widgets import PasswordInput
+import sqlalchemy
+from sqlalchemy.orm import Session, DeclarativeBase, Mapped, mapped_column, String
+
+engine: sqlalchemy.Engine = sqlalchemy.create_engine("postgresql+psycopg2://postgres:postgres@localhost:5432/postgres")
+
+
+class UserTable(DeclarativeBase):
+    __tablename__ = "user_account"
+
+    _id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(30))
+    
+    def __init__(self, _id: int, name: str="Олег"):
+        self._id = _id
+        self.name = name
+        
 
 class SomeForm(QuartForm):
     email = StringField(
@@ -45,6 +61,20 @@ async def main_page():
         print("yay")
         form_data["username"]
     ctx: dict = {"form": RegForm()}
+    
+    olegs: list[UserTable] = []
+    
+    with Session(engine, autocommit=True) as session:
+        try:
+            stmt = sqlalchemy.select(UserTable).filter(UserTable.name == "Олег")
+            # select * from user where name == 'Олег';
+            print(stmt)
+            olegs = session.scalars(stmt).all()
+        except Exception as e:
+            print(e)
+    
+    print(olegs)
+    
     return await render_template("index.html", form=RegForm())
 
 # @app.route("/<path:path>")
