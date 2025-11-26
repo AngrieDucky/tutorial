@@ -7,16 +7,18 @@ from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email, Regexp, Length
 from wtforms.widgets import PasswordInput
 import sqlalchemy
-from sqlalchemy.orm import Session, DeclarativeBase, Mapped, mapped_column, String
+from sqlalchemy.orm import Session, DeclarativeBase, Mapped, mapped_column
 
 engine: sqlalchemy.Engine = sqlalchemy.create_engine("postgresql+psycopg2://postgres:postgres@localhost:5432/postgres")
 
+class Base(DeclarativeBase):
+    pass
 
-class UserTable(DeclarativeBase):
+class UserTable(Base):
     __tablename__ = "user_account"
 
     _id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(30))
+    name: Mapped[str] = mapped_column(sqlalchemy.String(30))
     
     def __init__(self, _id: int, name: str="Олег"):
         self._id = _id
@@ -35,11 +37,13 @@ class SomeForm(QuartForm):
 class RegForm(QuartForm):
     username = StringField(label="Username", 
                            validators=[DataRequired("Username is required"), 
-                                        Length(max=128, min=4, message="Please make sure your username is  more than 4 and less than 128 bytes")])
+                                        Length(max=128, min=4, 
+                                               message="Please make sure your username is  more than 4 and less than 128 bytes")])
     password = PasswordField("Very Secret Password", 
                              validators=[DataRequired("Password is required"), 
-                                        Regexp(regex=re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=#_$!?])[a-zA-Z\d=#_$!?]$"), message="Passwod should be ..."), 
-                                        Length(3, 256, "password shoulf be at least 3 and at worst 256 bytes")])
+                                        Regexp(regex=re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=#_$!?])[a-zA-Z\d=#_$!?]$"), 
+                                               message="Passwod should be ..."), 
+                                        Length(3, 256, "password should be at least 3 and at worst 256 bytes")])
     
 
 app = Quart(__name__)
