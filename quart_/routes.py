@@ -1,3 +1,4 @@
+import datetime
 from functools import wraps
 from quart import Quart, abort, render_template, request
 import asyncio
@@ -9,20 +10,40 @@ from wtforms.widgets import PasswordInput
 import sqlalchemy
 from sqlalchemy.orm import Session, DeclarativeBase, Mapped, mapped_column
 
-engine: sqlalchemy.Engine = sqlalchemy.create_engine("postgresql+psycopg2://postgres:postgres@localhost:5432/postgres")
+engine: sqlalchemy.Engine = sqlalchemy.create_engine("postgresql+psycopg2://postgres:1234@localhost:5432/postgres", connect_args={'options': '-csearch_path={}'.format("public")})
 
 class Base(DeclarativeBase):
     pass
 
 class UserTable(Base):
-    __tablename__ = "user_account"
+    __tablename__ = "auth_user"
 
-    _id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(sqlalchemy.String(30))
+    _id: Mapped[int] = mapped_column("id", primary_key=True, index=True, autoincrement=True)
+    password: Mapped[str] = mapped_column(sqlalchemy.String(128))
+    last_login: Mapped[str] = mapped_column(sqlalchemy.Time(True))
+    is_superuser: Mapped[bool] = mapped_column(sqlalchemy.Boolean())
+    username: Mapped[str] = mapped_column("username", sqlalchemy.String(150))
+    first_name: Mapped[str] = mapped_column(sqlalchemy.String(150))
+    last_name: Mapped[str] = mapped_column(sqlalchemy.String(150))
+    email: Mapped[str] = mapped_column(sqlalchemy.String(254))
+    is_staff: Mapped[bool] = mapped_column(sqlalchemy.Boolean())
+    is_active: Mapped[bool] = mapped_column(sqlalchemy.Boolean())
+    date_joined: Mapped[str] = mapped_column(sqlalchemy.Time(True))
     
-    def __init__(self, _id: int, name: str="Олег"):
-        self._id = _id
-        self.name = name
+    def __init__(self, password: str, username: str):
+        self.username = username
+        self.password = password
+        self.last_login = datetime.datetime.now()
+        self.is_active = True
+        self.is_staff = False
+        self.is_superuser = False
+        self.email = ""
+        self.last_name = ""
+        self.first_name = ""
+        self.date_joined = datetime.datetime.now()
+        
+    def __repr__(self):
+        return f"{self.username} from table {self.__tablename__} joined at {self.date_joined}"
         
 
 class SomeForm(QuartForm):
@@ -33,6 +54,15 @@ class SomeForm(QuartForm):
             Email()
         ]
     )
+
+class User():
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+    
+    def update_password(self, new_password):
+        self.password = new_password
+        
 
 class RegForm(QuartForm):
     username = StringField(label="Username", 
@@ -63,17 +93,23 @@ async def main_page():
     form_data = await request.form
     if form_data:
         print("yay")
-        form_data["username"]
+        user = User(form_data["username"], form_data["password"])
     ctx: dict = {"form": RegForm()}
     
     olegs: list[UserTable] = []
-    
-    with Session(engine, autocommit=True) as session:
+    # stmt = "SELECT * FROM pg_catalog.pg_tables"
+    # with engine.connect() as conn:
+    #     res = conn.execute(sqlalchemy.text(stmt))
+    #     for row in res:
+    #         print(row)
+    with Session(engine) as session:
         try:
-            stmt = sqlalchemy.select(UserTable).filter(UserTable.name == "Олег")
+            
+            stmt = sqlalchemy.select(UserTable).filter(UserTable.username == "Oleg")
             # select * from user where name == 'Олег';
             print(stmt)
-            olegs = session.scalars(stmt).all()
+            _olegs = session.scalars(stmt)
+            olegs.extend(_olegs)
         except Exception as e:
             print(e)
     
@@ -93,4 +129,5 @@ async def homepage():
     return await render_template("index.html")
 
 if __name__ == "__main__":
+    # C:\Users\minak\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\Scripts
     app.run()
