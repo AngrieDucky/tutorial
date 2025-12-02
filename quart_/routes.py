@@ -1,83 +1,17 @@
 import datetime
 from functools import wraps
-from quart import Quart, abort, render_template, request
+from quart import abort, render_template, request
 import asyncio
-import re
-from quart_wtf import QuartForm
-from wtforms import StringField, PasswordField
-from wtforms.validators import DataRequired, Email, Regexp, Length
-from wtforms.widgets import PasswordInput
 import sqlalchemy
-from sqlalchemy.orm import Session, DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import Session
 
-engine: sqlalchemy.Engine = sqlalchemy.create_engine("postgresql+psycopg2://postgres:1234@localhost:5432/postgres", connect_args={'options': '-csearch_path={}'.format("public")})
+from quart_ import app
+from quart_.models import UserTable
+from quart_.forms import RegForm
+from quart_.user import User
+from quart_ import CONN_STRING
 
-class Base(DeclarativeBase):
-    pass
-
-class UserTable(Base):
-    __tablename__ = "auth_user"
-
-    _id: Mapped[int] = mapped_column("id", primary_key=True, index=True, autoincrement=True)
-    password: Mapped[str] = mapped_column(sqlalchemy.String(128))
-    last_login: Mapped[str] = mapped_column(sqlalchemy.Time(True))
-    is_superuser: Mapped[bool] = mapped_column(sqlalchemy.Boolean())
-    username: Mapped[str] = mapped_column("username", sqlalchemy.String(150))
-    first_name: Mapped[str] = mapped_column(sqlalchemy.String(150))
-    last_name: Mapped[str] = mapped_column(sqlalchemy.String(150))
-    email: Mapped[str] = mapped_column(sqlalchemy.String(254))
-    is_staff: Mapped[bool] = mapped_column(sqlalchemy.Boolean())
-    is_active: Mapped[bool] = mapped_column(sqlalchemy.Boolean())
-    date_joined: Mapped[str] = mapped_column(sqlalchemy.Time(True))
-    
-    def __init__(self, password: str, username: str):
-        self.username = username
-        self.password = password
-        self.last_login = datetime.datetime.now()
-        self.is_active = True
-        self.is_staff = False
-        self.is_superuser = False
-        self.email = ""
-        self.last_name = ""
-        self.first_name = ""
-        self.date_joined = datetime.datetime.now()
-        
-    def __repr__(self):
-        return f"{self.username} from table {self.__tablename__} joined at {self.date_joined}"
-        
-
-class SomeForm(QuartForm):
-    email = StringField(
-        'Email address',
-        validators=[
-            DataRequired('Please enter your email address'),
-            Email()
-        ]
-    )
-
-class User():
-    def __init__(self, username, password):
-        self.username = username
-        self.password = password
-    
-    def update_password(self, new_password):
-        self.password = new_password
-        
-
-class RegForm(QuartForm):
-    username = StringField(label="Username", 
-                           validators=[DataRequired("Username is required"), 
-                                        Length(max=128, min=4, 
-                                               message="Please make sure your username is  more than 4 and less than 128 bytes")])
-    password = PasswordField("Very Secret Password", 
-                             validators=[DataRequired("Password is required"), 
-                                        Regexp(regex=re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=#_$!?])[a-zA-Z\d=#_$!?]$"), 
-                                               message="Passwod should be ..."), 
-                                        Length(3, 256, "password should be at least 3 and at worst 256 bytes")])
-    
-
-app = Quart(__name__)
-app.secret_key = "Very_secret_much_wow"
+engine: sqlalchemy.Engine = sqlalchemy.create_engine(CONN_STRING, connect_args={'options': '-csearch_path={}'.format("public")})  
 
 def login_required(func):
     @wraps(func)
@@ -88,7 +22,8 @@ def login_required(func):
             abort(401)
     return wrapper
 
-@app.get('/')
+@app.get('/imdx')
+@app.route('/', methods=["GET", "POST"])
 async def main_page():
     form_data = await request.form
     if form_data:
@@ -127,7 +62,3 @@ async def main_page():
 @app.route('/homepage', methods=["POST", "PUT", "DELETE"])
 async def homepage():
     return await render_template("index.html")
-
-if __name__ == "__main__":
-    # C:\Users\minak\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\Scripts
-    app.run()
