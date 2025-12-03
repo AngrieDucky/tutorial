@@ -1,5 +1,131 @@
-'this is a main page'
-<form method="POST" action="/register">
-    <div>{{ form.username.label }}: {{ form.username() }}</div>
-    <div>{{ form.password.label }}: {{ form.password() }}</div>
-</form>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница Олега</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+
+<div class="page-container">
+    
+    <header class="header">
+        <div class="header-content">
+            <span class="logo">
+                <img src="static/pictures/Ellipse 1.png" alt="Олег Иконка" class="header-icon">
+                Олег: Играю и пою
+            </span>
+            <div class="header-buttons">
+                <button>Задонатить</button>
+                <button>Отдать долг</button>
+                <button>На медиатор</button>
+                <button>На Яшку</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        
+        <section class="section-about">
+            <div class="about-text">
+                <h2>Кто такой Олег?</h2>
+                <p>Это мы именно про Олега! Откуда он пришёл? Мы не знаем. Ему нравится, но не всем мамам. Нам очень страшно, когда мы видим Олега.</p>
+            </div>
+            <div class="about-image">
+                <img src="static/pictures/Rectangle 9.png" alt="Олег сидит с гитарой" class="oleg-photo">
+            </div>
+        </section>
+
+        <section class="section-reviews">
+            <div class="section-reviews-content">
+                <div class="review-card">
+                    <p>Это восторженный отзыв от мамы Олега</p>
+                    <div class="rating">
+                        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">☆</span>
+                    </div>
+                </div>
+                <div class="review-card">
+                    <p>Это максимально позитивный отзыв на Олега за то, что он играет песни по мультикам у метро</p>
+                    <div class="rating">
+                        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">☆</span>
+                    </div>
+                </div>
+                <div class="review-card">
+                    <p>Это недовольный отзыв от бомжа Саши, который считает себя талантом, а Олега — нет</p>
+                    <div class="rating">
+                        <span class="star">★</span><span class="star">★</span><span class="star">☆</span><span class="star">☆</span><span class="star">☆</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-video video-custom-style">
+            <div class="video-header-wrapper">
+                <h3 class="video-title">Олег в ВК Видео</h3>
+            </div>
+            <div class="video-list custom-video-list">
+                <div class="video-item custom-video-item"></div> 
+                <div class="video-item custom-video-item"></div>
+                <div class="video-item custom-video-item"></div>
+                <div class="video-item custom-video-item"></div>
+                <div class="video-item custom-video-item"></div>
+            </div>
+        </section>
+
+        <section class="section-add-review">
+            <div class="review-form-content">
+                <div class="form-fields">
+                    <label for="review-from">От кого</label>
+                    <input type="text" id="review-from">
+                    
+                    <label for="review-score">Оценка</label>
+                    <input type="text" id="review-score">
+                    
+                    <label for="review-comment">Комментарий</label>
+                    <textarea id="review-comment"></textarea>
+                    
+                    <button class="submit-button">Оставить отзыв</button>
+                </div>
+                <div class="rating-visual">
+                    <div class="stars-image">
+
+</div>
+                    <img src="static/pictures/Group 1.png" alt="Графика звезд" style="border-radius: 50%;"> 
+                </div>
+            </div>
+        </section>
+
+        <section class="section-order">
+            <div class="section-order-content">
+                <div class="order-form-fields">
+                    <h3>Заказать концерт у метро</h3>
+                    <label for="order-station">Станция метро</label>
+                    <input type="text" id="order-station">
+                    
+                    <label for="order-fio">ФИО заказчика</label>
+                    <input type="text" id="order-fio">
+                    
+                    <button class="submit-button order-button">Заказать</button>
+                </div>
+                <div class="order-image">
+                    <img src="static/pictures/изображение_2025-11-12_100745416-no-bg-preview (carve.photos) 1.png" alt="Наушники" class="headphones-img">
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer">
+        <div class="donation-row">
+            <img src="static/pictures/image 2.png" alt="Эмодзи" class="emoji-img">
+            <button class="donate-all">Задонатить от всей души!</button>
+            <img src="static/pictures/image 2.png" alt="Эмодзи" class="emoji-img">
+        </div>
+    </footer>
+
+</div>
+
+</body>
+</html>

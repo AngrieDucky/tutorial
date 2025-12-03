@@ -1,5 +1,9 @@
 import json
 
+@app.errorhandler(404)
+async def not_found_error(error):
+    return jsonify({"message": "Resource not found"}), 404
+
 # print(int("-1"))
 # & | !
 if __name__ == "__main__":

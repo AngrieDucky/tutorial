@@ -1,6 +1,7 @@
 import datetime
 from functools import wraps
-from quart import abort, render_template, request
+import os
+from quart import abort, render_template, request, jsonify, send_from_directory
 import asyncio
 import sqlalchemy
 from sqlalchemy.orm import Session
@@ -49,7 +50,6 @@ async def main_page():
             print(e)
     
     print(olegs)
-    
     return await render_template("index.html", form=RegForm())
 
 # @app.route("/<path:path>")
@@ -62,3 +62,22 @@ async def main_page():
 @app.route('/homepage', methods=["POST", "PUT", "DELETE"])
 async def homepage():
     return await render_template("index.html")
+
+@app.route("/teapot", methods=["GET"])
+async def teapot():
+    abort(418)
+    
+@app.route("/error")
+async def this_is_an_error():
+    abort(500)
+    
+# ============================= Error Handlers ===========================
+
+@app.errorhandler(404)
+async def page_not_found(error):
+    print(error)
+    return await render_template("index.html", form=RegForm())
+
+@app.errorhandler(500)
+async def internal_error(error):
+    return jsonify({"message": "This is an error", "status_code": 500})
