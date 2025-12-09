@@ -1,7 +1,7 @@
 import datetime
 from functools import wraps
 import os
-from quart import abort, render_template, request, jsonify, send_from_directory
+from quart import abort, render_template, request, jsonify, send_from_directory, redirect, url_for
 import asyncio
 import sqlalchemy
 from sqlalchemy.orm import Session
@@ -25,7 +25,8 @@ def login_required(func):
 
 @app.get('/imdx')
 @app.route('/', methods=["GET", "POST"])
-async def main_page():
+async def main():
+    return redirect(url_for('oleg.main_page'))
     form_data = await request.form
     if form_data:
         print("yay")
@@ -50,7 +51,12 @@ async def main_page():
             print(e)
     
     print(olegs)
-    return await render_template("index.html", form=RegForm())
+    ctx: dict = {"title": "Главная"}
+    return await render_template("index.html", context=ctx)
+
+@app.route("/design", methods=["GET", "POST"])
+async def design_page():
+    return "ok"
 
 # @app.route("/<path:path>")
 # async def anyotherpage(path_that_we_have_entered):

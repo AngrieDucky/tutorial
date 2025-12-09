@@ -1,20 +1,16 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Страница Олега</title>
-    <link rel="stylesheet" href="static/css/styles.css">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-</head>
-<body>
+{% extends "base.html" %}
 
+{% if title %}
+{% block title %}{{context.title}}{% endblock %}
+{% endif %}
+
+{% block content%}
 <div class="page-container">
     
     <header class="header">
         <div class="header-content">
             <span class="logo">
-                <img src="static/pictures/Ellipse 1.png" alt="Олег Иконка" class="header-icon">
+                <img src="{{ url_for('static', filename='pictures/Ellipse 1.png') }}" alt="Олег Иконка" class="header-icon">
                 Олег: Играю и пою
             </span>
             <div class="header-buttons">
@@ -34,7 +30,7 @@
                 <p>Это мы именно про Олега! Откуда он пришёл? Мы не знаем. Ему нравится, но не всем мамам. Нам очень страшно, когда мы видим Олега.</p>
             </div>
             <div class="about-image">
-                <img src="static/pictures/Rectangle 9.png" alt="Олег сидит с гитарой" class="oleg-photo">
+                <img src="{{ url_for('static', filename='pictures/Rectangle 9.png') }}" alt="Олег сидит с гитарой" class="oleg-photo">
             </div>
         </section>
 
@@ -92,7 +88,7 @@
                     <div class="stars-image">
 
 </div>
-                    <img src="static/pictures/Group 1.png" alt="Графика звезд" style="border-radius: 50%;"> 
+                    <img src="{{ url_for('static', filename='pictures/Group 1.png') }}" alt="Графика звезд" style="border-radius: 50%;"> 
                 </div>
             </div>
         </section>
@@ -110,7 +106,7 @@
                     <button class="submit-button order-button">Заказать</button>
                 </div>
                 <div class="order-image">
-                    <img src="static/pictures/изображение_2025-11-12_100745416-no-bg-preview (carve.photos) 1.png" alt="Наушники" class="headphones-img">
+                    <img src="{{ url_for('static', filename='pictures/изображение_2025-11-12_100745416-no-bg-preview (carve.photos) 1.png') }}" alt="Наушники" class="headphones-img">
                 </div>
             </div>
         </section>
@@ -119,13 +115,11 @@
 
     <footer class="footer">
         <div class="donation-row">
-            <img src="static/pictures/image 2.png" alt="Эмодзи" class="emoji-img">
+            <img src="{{ url_for('static', filename='pictures/image 2.png') }}" alt="Эмодзи" class="emoji-img">
             <button class="donate-all">Задонатить от всей души!</button>
-            <img src="static/pictures/image 2.png" alt="Эмодзи" class="emoji-img">
+            <img src="{{ url_for('static', filename='pictures/image 2.png') }}" alt="Эмодзи" class="emoji-img">
         </div>
     </footer>
 
 </div>
-
-</body>
-</html>
+{% endblock%}
