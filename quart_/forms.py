@@ -22,3 +22,9 @@ class RegForm(QuartForm):
                                         Regexp(regex=re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=#_$!?])[a-zA-Z\d=#_$!?]$"), 
                                                message="Passwod should be ..."), 
                                         Length(3, 256, "password should be at least 3 and at worst 256 bytes")])
+    
+    def sndmail(self):
+        pass
+    
+class MetroForm(QuartForm):
+    pass

@@ -26,7 +26,21 @@ def login_required(func):
 @app.get('/imdx')
 @app.route('/', methods=["GET", "POST"])
 async def main():
-    return redirect(url_for('oleg.main_page'))
+    ctx: dict = {"title": "Главная"}
+    
+    if request.method == "POST":
+        unknown = 'Не указано'
+        form_data = await request.form
+        
+        if 'review-from' in form_data:
+            # form_data = await request.form
+            result_1 = ["ЗАКАЗ КОНЦЕРТА:", "Станция метро:", "ФИО заказчика:"]
+            
+            delimiter = "=" * 50
+            newline = "\n".join(result_1)
+            print(f"{delimiter}\n{newline}\n{delimiter}")
+    
+    return await render_template("index.html", context=ctx)
     form_data = await request.form
     if form_data:
         print("yay")
@@ -77,6 +91,9 @@ async def teapot():
 async def this_is_an_error():
     abort(500)
     
+def unknown_func():
+    pass
+    
 # ============================= Error Handlers ===========================
 
 @app.errorhandler(404)
@@ -87,3 +104,5 @@ async def page_not_found(error):
 @app.errorhandler(500)
 async def internal_error(error):
     return jsonify({"message": "This is an error", "status_code": 500})
+
+# quart --debug run --port 8000
