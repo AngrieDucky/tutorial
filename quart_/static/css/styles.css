@@ -136,9 +136,9 @@ section {
     background-color: #A9C2F8; 
     width: calc((100% - (15px * 4)) / 5); 
     border-radius: 5px;
-    height: 280px; 
+    height: 250px; 
 }
-.custom-video-item:nth-child(2) { height: 260px; }
+.custom-video-item:nth-child(2) { height: 290px; }
 .custom-video-item:nth-child(3) { height: 320px; } 
 .custom-video-item:nth-child(4) { height: 290px; }
 .custom-video-item:nth-child(5) { height: 250px; }

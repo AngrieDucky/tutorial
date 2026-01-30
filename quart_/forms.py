@@ -23,8 +23,9 @@ class RegForm(QuartForm):
                                                message="Passwod should be ..."), 
                                         Length(3, 256, "password should be at least 3 and at worst 256 bytes")])
     
-    def sndmail(self):
-        pass
     
 class MetroForm(QuartForm):
-    pass
+    metro_station = StringField(label="Станция Метро", validators=[DataRequired("Станция метро не может быть пустой"), 
+                                                                   Length(3, 30, "Название станции метро не может быть длиннее 30 символов")])
+    fio = StringField(label="Станция Метро", validators=[DataRequired("ФИО заполнять обязательно"), 
+                                                                   Length(3, 100, "Слишком длинное имя. Используйте инициалы.")])

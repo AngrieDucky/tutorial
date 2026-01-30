@@ -51,4 +51,4 @@ if __name__ == "__main__":
             return "this is a class"
         
     s = A()
-    print(s)
+    print(len("Константин константинович константиновский-оглы-байрам"))
