@@ -74,6 +74,20 @@ async def main():
     ctx: dict = {"title": "Главная"}
     return await render_template("index.html", context=ctx)
 
+def generate_twitter_meta(oleg_site:str=""):
+    if not oleg_site:
+        oleg_site = "http://oleg-site.ru"
+    result = f"""
+    <meta name="twitter:title" content="Machine Learning Workshop" />
+    <meta name="twitter:description" content="School for machines who can't learn good and want to do other stuff good too" />
+    <meta name="twitter:url" content="{oleg_site}" />
+    <meta name="twitter:image:src" content="http://oleg-site.ru/static/pictures/Rectangle9.png" />
+    <meta name="twitter:image:alt" content="Олег: играет и поёт" />
+    <meta name="twitter:creator" content="@0leg" />
+    <meta name="twitter:site" content="@0leg" />
+    """
+    return result
+
 @app.route("/design", methods=["GET", "POST"])
 async def design_page():
     return "ok"
