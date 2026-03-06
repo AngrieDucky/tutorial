@@ -66,7 +66,8 @@ async def main():
             
             delimiter = "=" * 50
             newline = "\n".join(result_1)
-            await send_email(f"{delimiter}\n{newline}\n{delimiter}")
+            msg = create_message("Новый концерт", "oleg+concert@gmail.com", f"{delimiter}\n{newline}\n{delimiter}")
+            await send_email(msg)
     
     return await render_template("index.html", context=ctx)
     form_data = await request.form
