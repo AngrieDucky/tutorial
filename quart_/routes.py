@@ -12,8 +12,29 @@ from quart_.models import UserTable
 from quart_.forms import RegForm, MetroForm
 from quart_.user import User
 from quart_ import CONN_STRING
+import aiosmtplib
+from email.mime.text import MIMEText
 
 engine: sqlalchemy.Engine = sqlalchemy.create_engine(CONN_STRING, connect_args={'options': '-csearch_path={}'.format("public")})  
+
+SMTP_SERVER = 'smtp.google.com'
+SMTP_PORT = 587
+EMAIL_USER = 'oleg@google.com'
+EMAIL_PASSWORD = 'password'
+
+async def send_email(msg):
+    smtp_server = aiosmtplib.SMTP(SMTP_SERVER, port=SMTP_PORT)
+    await smtp_server.connect()
+    await smtp_server.starttls()
+    await smtp_server.login(EMAIL_USER, EMAIL_PASSWORD)
+    await smtp_server.send_message(msg)
+    await smtp_server.quit()
+    
+def create_message(subject, recepient, message):
+    message = MIMEText(message)
+    message['Subject'] = subject
+    message['From'] = EMAIL_USER
+    message['To'] = recepient
 
 def login_required(func):
     @wraps(func)
@@ -45,7 +66,7 @@ async def main():
             
             delimiter = "=" * 50
             newline = "\n".join(result_1)
-            print(f"{delimiter}\n{newline}\n{delimiter}")
+            await send_email(f"{delimiter}\n{newline}\n{delimiter}")
     
     return await render_template("index.html", context=ctx)
     form_data = await request.form
