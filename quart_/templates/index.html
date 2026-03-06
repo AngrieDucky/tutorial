@@ -63,8 +63,8 @@
             </div>
             <div class="video-list custom-video-list">
                 <div class="video-item custom-video-item"></div> 
-                <div class="video-item custom-video-item"></div>
-                <div class="video-item custom-video-item"></div>
+                <div class="video-item custom-video-item"><button id="sendButton" onclick="fetch_data()" >Random random</button></div>
+                <div class="video-item custom-video-item" id="this_one"></div>
                 <div class="video-item custom-video-item"></div>
                 <div class="video-item custom-video-item"></div>
             </div>
@@ -82,7 +82,7 @@
                     <label for="review-comment">Комментарий</label>
                     <textarea id="review-comment"></textarea>
                     
-                    <button class="submit-button">Оставить отзыв</button>
+                    <button class="button">Оставить отзыв</button>
                 </div>
                 <div class="rating-visual">
                     <div class="stars-image">
@@ -122,4 +122,15 @@
     </footer>
 
 </div>
+<script>
+    async function fetch_data() {
+        try {
+            const response = await fetch('/rand_fact');
+            const result = await response.json();
+            document.getElementById('this_one').innerText = result.message;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+</script>
 {% endblock%}

@@ -3,6 +3,7 @@ from functools import wraps
 import os
 from quart import abort, render_template, request, jsonify, send_from_directory, redirect, url_for
 import asyncio
+import random
 import sqlalchemy
 from sqlalchemy.orm import Session
 
@@ -73,6 +74,14 @@ async def main():
     print(olegs)
     ctx: dict = {"title": "Главная"}
     return await render_template("index.html", context=ctx)
+
+
+@app.get('/rand_fact')
+async def random_fact():
+    x = ["Случайный факт номер 1", "Совершенно неслучайный факт", "Не факт, что это - случайность", "Олег - лучший уличный музыкант"]
+    num = random.randint(0,3)
+    return jsonify({"message": x[num], "status_code": 200})
+
 
 def generate_twitter_meta(oleg_site:str=""):
     if not oleg_site:
