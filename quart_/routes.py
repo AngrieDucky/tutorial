@@ -1,7 +1,7 @@
 import datetime
 from functools import wraps
 import os
-from quart import abort, render_template, request, jsonify, send_from_directory, redirect, url_for
+from quart import abort, render_template, request, jsonify, flash, send_from_directory, redirect, url_for
 import asyncio
 import random
 import sqlalchemy
@@ -45,31 +45,42 @@ def login_required(func):
             abort(401)
     return wrapper
 
-@app.get('/imdx')
+# @app.get('/imdx')
 @app.route('/', methods=["GET", "POST"])
 async def main():
     ctx: dict = {"title": "Главная"}
     metroform = MetroForm()
     
     if request.method == "POST":
+        print("it was post")
+        print(request.url)
+        await flash("Форма была отправлена!")
         unknown = 'Не указано'
+        # Надо переводить ImmutableMultiDict в обычный словарь:
         form_data = await request.form
+        print(form_data)
+        # form_data = [('metro_station', '2345678'), ('fio', 'wertyui'), ('submit', 'Отправить заказ')]
+        form_data = form_data.to_dict()
+        metro_station = form_data.get("metro_station")
+        fio = form_data.get("fio")
         
-        if 'review-from' in form_data:
-            metro = form_data["order-station"] # если пользователь ничего не написал - ошибка 500
-            metro = form_data.get('order-station', 'Не указано') # Если пользователь прислал слишком много
-            if ";" in metro:
-                return await render_template("index.html", context=ctx)
-            who_asked = form_data.get('order-fio', 'Не указано')
+        print(f"Метро: {metro_station}, ФИО: {fio}")
+        
+        # if 'review-from' in form_data:
+        #     metro = form_data["order-station"] # если пользователь ничего не написал - ошибка 500
+        #     metro = form_data.get('order-station', 'Не указано') # Если пользователь прислал слишком много
+        #     if ";" in metro:
+        #         return await render_template("index.html", context=ctx, metroform=metroform)
+        #     who_asked = form_data.get('order-fio', 'Не указано')
                 
-            result_1 = ["ЗАКАЗ КОНЦЕРТА:", "Станция метро:", "ФИО заказчика:"]
-            
-            delimiter = "=" * 50
-            newline = "\n".join(result_1)
-            msg = create_message("Новый концерт", "oleg+concert@gmail.com", f"{delimiter}\n{newline}\n{delimiter}")
-            await send_email(msg)
-    
-    return await render_template("index.html", context=ctx)
+        #     result_1 = ["ЗАКАЗ КОНЦЕРТА:", "Станция метро:", "ФИО заказчика:"]
+                
+        #     delimiter = "=" * 50
+        #     newline = "\n".join(result_1)
+        #     msg = create_message("Новый концерт", "oleg+concert@gmail.com", f"{delimiter}\n{newline}\n{delimiter}")
+        #     await send_email(msg)
+    await flash("Мы загрузились!")
+    return await render_template("index.html", context=ctx, metroform=metroform)
     form_data = await request.form
     if form_data:
         print("yay")
@@ -84,8 +95,7 @@ async def main():
     #         print(row)
     with Session(engine) as session:
         try:
-            
-            stmt = sqlalchemy.select(UserTable).filter(UserTable.username == "Oleg")
+            stmt = sqlalchemy.select(UserTable).filter(UserTable.username == what_user_sent)
             # select * from user where name == 'Олег';
             print(stmt)
             _olegs = session.scalars(stmt)
@@ -150,7 +160,16 @@ def unknown_func():
 @app.errorhandler(404)
 async def page_not_found(error):
     print(error)
-    return await render_template("index.html", form=RegForm())
+    print(request.url)
+    form = MetroForm()
+    return await render_template("index.html", context=error, metroform=form)
+
+@app.errorhandler(400)
+async def page_not_found(error):
+    print(error)
+    print(request.url)
+    form = MetroForm()
+    return await render_template("index.html", context=error, metroform=form)
 
 @app.errorhandler(500)
 async def internal_error(error):

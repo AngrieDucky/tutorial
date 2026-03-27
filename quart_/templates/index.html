@@ -97,13 +97,17 @@
             <div class="section-order-content">
                 <div class="order-form-fields">
                     <h3>Заказать концерт у метро</h3>
-                    <label for="order-station">Станция метро</label>
-                    <input type="text" id="order-station">
-                    
-                    <label for="order-fio">ФИО заказчика</label>
-                    <input type="text" id="order-fio">
-                    
-                    <button class="submit-button order-button">Заказать</button>
+                    <form method="POST" action="{{ url_for('main') }}">
+                        {{ metroform.csrf_token }}
+
+                        {{ metroform.metro_station.label }}
+                        {{ metroform.metro_station }}
+                        
+                        {{ metroform.fio.label }}
+                        {{ metroform.fio }}
+
+                        <button class="submit-button order-button">Оставить Зявку</button>
+                    </form>
                 </div>
                 <div class="order-image">
                     <img src="{{ url_for('static', filename='pictures/изображение_2025-11-12_100745416-no-bg-preview (carve.photos) 1.png') }}" alt="Наушники" class="headphones-img">

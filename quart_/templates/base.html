@@ -25,7 +25,11 @@
     <title>{% block title %}{% endblock %} у Олега</title>
     {% endblock %}
 </head>
-
 <body>
+<ul>
+{% for message in get_flashed_messages() %}
+  <li>{{ message }}</li>
+{% endfor %}
+</ul>
     <div id="content">{% block content %}{% endblock %}</div>
 </body>
