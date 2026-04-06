@@ -33,7 +33,7 @@ class MetroForm(QuartForm):
 class IsAlNum():
     def __call__(self, form, field: str):
         if not field.isalnum():
-            raise ValidationError("Invalid input syntax")    
+            raise ValidationError("Invalid input syntax")
 
     
 class FormReg(QuartForm):

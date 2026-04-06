@@ -60,6 +60,7 @@ async def main():
         form_data = await request.form
         print(form_data)
         # form_data = [('metro_station', '2345678'), ('fio', 'wertyui'), ('submit', 'Отправить заказ')]
+        print(form_data.get("fio"))
         form_data = form_data.to_dict()
         metro_station = form_data.get("metro_station")
         fio = form_data.get("fio")
@@ -95,10 +96,10 @@ async def main():
     #         print(row)
     with Session(engine) as session:
         try:
-            stmt = sqlalchemy.select(UserTable).filter(UserTable.username == what_user_sent)
+            stmt = sqlalchemy.select(models.UserTable).filter(models.UserTable.username == what_user_sent)
             # select * from user where name == 'Олег';
             print(stmt)
-            _olegs = session.scalars(stmt)
+            _olegs = session.execute(stmt).one()
             olegs.extend(_olegs)
         except Exception as e:
             print(e)
